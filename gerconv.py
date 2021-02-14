@@ -4,6 +4,15 @@ import os
 from pyxpdf import Document
 import subprocess
 
+# HLPER FUNCTION: Get Time Now:
+from datetime import datetime
+def time_now():
+    '''Get Current Time'''
+    
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    print("Current Time =", current_time)
+    return now
 
 def compile_list(files_input='', directory=''):
     '''
@@ -86,6 +95,8 @@ while True:
 
     # print(loop_counter)
     if event == "-PDF_CONV-":
+        print('\nStarting...')
+        start = time_now()
         sg.popup(lang_support, title='NOTE!', auto_close_duration=5, auto_close=True, font='Arial 14')
         list_pdf_files = compile_list(files_, dir_)
         list_pdf_files = [i.replace('\\', '/') for i in list_pdf_files]
@@ -101,6 +112,20 @@ while True:
             print('Output File is in the following folder:\n\t', select_file)
             subprocess.Popen(f'explorer /select,{select_file}')
             print('_'*50, '\n')
+
+            ############
+            print('Finished...')
+            end = time_now()
+            ############
+            duration = end - start
+            duration_min = round(duration.seconds/60, 3)
+            if duration_min < 2:
+                time_unit = 'minute'
+            else:
+                time_unit = 'minutes'
+            
+            print(f'{len(list_pdf_files)} PDF files were converted to a single TXT file.')
+            print(f'Total duration of conversion is {duration_min} {time_unit}.')
 
         # In case the select files path contains a special chracter like (;) which might corrupt splitting!
         else:
